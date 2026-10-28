@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Cultura Alemã - CLAC</title>
+    <!-- Tailwind CSS para um design moderno -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
+
+    <div class="w-full max-w-2xl bg-slate-800 rounded-2xl shadow-xl p-6 md:p-8 border border-slate-700">
+        
+        <!-- TELA 1: Identificação (Perfil e Nome) -->
+        <div id="screen-welcome" class="space-y-6">
+            <div class="text-center space-y-2">
+                <span class="bg-amber-500/10 text-amber-400 text-xs font-semibold px-3 py-1 rounded-full border border-amber-500/20">Desafio Cultural</span>
+                <h1 class="text-3xl font-bold tracking-tight text-white">Quiz de Cultura Alemã 🇩🇪</h1>
+                <p class="text-slate-400 text-sm">Teste seus conhecimentos sobre a Alemanha e dispute o ranking global!</p>
+            </div>
+
+            <div class="space-y-4 pt-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">Seu Nome Completo ou Apelido:</label>
+                    <input type="text" id="user-name" placeholder="Ex: Hans Gruber" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 transition">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">Você é:</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button type="button" onclick="setProfile('Aluno CLAC')" id="btn-clac" class="profile-btn border border-slate-700 bg-slate-900/50 hover:bg-slate-700/50 py-3 rounded-xl font-medium transition text-center">Aluno do CLAC</button>
+                        <button type="button" onclick="setProfile('Visitante')" id="btn-visitor" class="profile-btn border border-slate-700 bg-slate-900/50 hover:bg-slate-700/50 py-3 rounded-xl font-medium transition text-center">Visitante</button>
+                    </div>
+                </div>
+
+                <div class="pt-4 flex gap-3">
+                    <button onclick="startQuiz()" class="flex-1 bg-amber-600 hover:bg-amber-500 text-white font-semibold py-3.5 rounded-xl transition shadow-lg shadow-amber-600/20">Iniciar Quiz</button>
+                    <button onclick="showRanking()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 font-semibold px-6 py-3.5 rounded-xl transition">Ver Ranking</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TELA 2: O Quiz (Perguntas) -->
+        <div id="screen-quiz" class="hidden space-y-6">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-4">
+                <span id="question-counter" class="text-xs font-semibold uppercase tracking-wider text-amber-400">Pergunta 1 de 20</span>
+                <span id="quiz-timer" class="text-xs bg-slate-700 px-2.5 py-1 rounded-full text-slate-300">Pontos: <strong id="current-score" class="text-white">0</strong></span>
+            </div>
+
+            <h2 id="question-text" class="text-xl font-semibold text-white">Carregando pergunta...</h2>
+
+            <div id="options-container" class="space-y-3">
+                <!-- Alternativas injetadas via JS -->
+            </div>
+
+            <div class="flex justify-end pt-2">
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-amber-600 hover:bg-amber-500 text-white font-semibold px-6 py-2.5 rounded-xl transition">Próxima Pergunta</button>
+            </div>
+        </div>
+
+        <!-- TELA 3: Resultado Final -->
+        <div id="screen-result" class="hidden text-center space-y-6">
+            <div class="space-y-2">
+                <span class="text-amber-400 font-medium text-sm">Quiz Finalizado!</span>
+                <h2 class="text-3xl font-bold text-white" id="result-name">Parabéns!</h2>
+            </div>
+
+            <div class="bg-slate-900/60 border border-slate-700/60 rounded-2xl p-6 max-w-sm mx-auto space-y-2">
+                <p class="text-slate-400 text-sm">Sua porcentagem de acerto:</p>
+                <div class="text-5xl font-extrabold text-amber-400" id="result-percentage">0%</div>
+                <p class="text-xs text-slate-500" id="result-details">Você acertou 0 de 20 perguntas.</p>
+            </div>
+
+            <div class="flex justify-center gap-4 pt-2">
+                <button onclick="showRanking()" class="bg-amber-600 hover:bg-amber-500 text-white font-semibold px-6 py-3 rounded-xl transition">Ver Ranking Global</button>
+                <button onclick="location.reload()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 font-semibold px-6 py-3 rounded-xl transition">Jogar Novamente</button>
+            </div>
+        </div>
+
+        <!-- TELA 4: Ranking Global -->
+        <div id="screen-ranking" class="hidden space-y-6">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-4">
+                <h2 class="text-2xl font-bold text-white">🏆 Ranking Global</h2>
+                <button onclick="backToWelcome()" class="text-sm text-slate-400 hover:text-white transition">Voltar ao Início</button>
+            </div>
+
+            <div class="overflow-x-auto max-h-96 overflow-y-auto pr-1">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-700 text-xs text-slate-400 uppercase tracking-wider">
+                            <th class="py-3 px-4">Pos</th>
+                            <th class="py-3 px-4">Nome</th>
+                            <th class="py-3 px-4">Perfil</th>
+                            <th class="py-3 px-4 text-right">Acertos</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ranking-table-body" class="divide-y divide-slate-700/50 text-sm">
+                        <!-- Carregado via Firebase -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Script da Aplicação e Firebase (Modular SDK) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // ==========================================
+        // 1. CONFIGURAÇÃO DO FIREBASE (Sua API)
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDa5DldqRm-uFlZmTEaFI0ojYEHt_BaLdg",
+            authDomain: "projscs-2024.firebaseapp.com",
+            projectId: "projscs-2024",
+            storageBucket: "projscs-2024.firebasestorage.app",
+            messagingSenderId: "209077765839",
+            appId: "1:209077765839:web:b82e719a6f2f42d12199ba"
+        };
+
+        // Inicializar Firebase e Firestore
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // ==========================================
+        // 2. BANCO DE PERGUNTAS (20 PERGUNTAS)
+        // ==========================================
+        const questions = [
+            { q: "Qual é a capital da Alemanha?", options: ["Munique", "Berlim", "Frankfurt", "Hamburgo"], answer: 1 },
+            { q: "Qual rio famoso cruza a cidade de Colônia (Köln)?", options: ["Rio Reno", "Rio Danúbio", "Rio Elba", "Rio Meno"], answer: 0 },
+            { q: "Em que ano ocorreu a queda do Muro de Berlim?", options: ["1987", "1989", "1991", "1993"], answer: 1 },
+            { q: "Qual destes festivais de cerveja acontece anualmente em Munique?", options: ["Carnaval de Munique", "Oktoberfest", "Berlinale", "Wacken Open Air"], answer: 1 },
+            { q: "Qual é a moeda oficial da Alemanha antes de adotarem o Euro?", options: ["Mark", "Deutsche Mark", "Schilling", "Franco Alemão"], answer: 1 },
+            { q: "Quantos estados federais (Bundesländer) compõem a Alemanha?", options: ["12", "14", "16", "18"], answer: 2 },
+            { q: "Qual famoso compositor clássico nasceu em Bona (Bonn) em 1770?", options: ["Johann Sebastian Bach", "Wolfgang Amadeus Mozart", "Ludwig van Beethoven", "Johannes Brahms"], answer: 2 },
+            { q: "Qual é o pico mais alto da Alemanha?", options: ["Zugspitze", "Monte Branco", "Matterhorn", "Fichtelberg"], answer: 0 },
+            { q: "Qual marca de carros alemã tem quatro anéis em seu logotipo?", options: ["BMW", "Mercedes-Benz", "Audi", "Porsche"], answer: 2 },
+            { q: "Como se diz 'Obrigado' em alemão?", options: ["Bitte", "Danke", "Guten Tag", "Auf Wiedersehen"], answer: 1 },
+            { q: "Qual é o castelo alemão famoso que serviu de inspiração para os contos de fada da Disney?", options: ["Castelo de Heidelberg", "Castelo de Neuschwanstein", "Castelo de Eltz", "Castelo de Hohenzollern"], answer: 1 },
+            { q: "Qual prato tradicional alemão consiste em salsicha cortada com molho de ketchup e curry em pó?", options: ["Bratwurst", "Currywurst", "Schnitzel", "Pretzel"], answer: 1 },
+            { q: "Quem foi o chanceler que liderou a reunificação da Alemanha nos anos 90?", options: ["Angela Merkel", "Willy Brandt", "Helmut Kohl", "Gerhard Schröder"], answer: 2 },
+            { q: "Qual é a cor dominante na bandeira oficial da Alemanha?", options: ["Preto, Vermelho e Dourado", "Azul, Branco e Vermelho", "Preto, Branco e Vermelho", "Verde, Amarelo e Vermelho"], answer: 0 },
+            { q: "Em que cidade alemã fica a sede do Banco Central Europeu?", options: ["Berlim", "Frankfurt am Main", "Hamburgo", "Stuttgart"], answer: 1 },
+            { q: "Qual é o nome do parlamento federal alemão?", options: ["Bundestag", "Reichstag", "Landtag", "Bundesrat"], answer: 0 },
+            { q: "Qual é o pão torcido em formato de nó clássico muito popular na culinária alemã?", options: ["Baguette", "Pretzel (Brezel)", "Ciabatta", "Brioche"], answer: 1 },
+            { q: "Qual o nome da famosa rodovia alemã conhecida por trechos sem limite geral de velocidade?", options: ["Autobahn", "Bundesstraße", "Schnellstraße", "Autopista"], answer: 0 },
+            { q: "Qual cidade abriga o maior porto da Alemanha?", options: ["Bremen", "Hamburgo", "Rostock", "Kiel"], answer: 1 },
+            { q: "Qual é o nome da famosa floresta montanhosa no sudoeste da Alemanha?", options: ["Floresta Negra (Schwarzwald)", "Floresta da Baviera", "Floresta de Teutoburgo", "Floresta de Harz"], answer: 0 }
+        ];
+
+        // ==========================================
+        // 3. ESTADO DO JOGO E LÓGICA
+        // ==========================================
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userName = "";
+        let userProfile = "";
+
+        window.setProfile = function(profile) {
+            userProfile = profile;
+            document.querySelectorAll('.profile-btn').forEach(btn => {
+                btn.classList.remove('border-amber-500', 'bg-amber-500/10', 'text-amber-400');
+            });
+            if(profile === 'Aluno CLAC') {
+                document.getElementById('btn-clac').classList.add('border-amber-500', 'bg-amber-500/10', 'text-amber-400');
+            } else {
+                document.getElementById('btn-visitor').classList.add('border-amber-500', 'bg-amber-500/10', 'text-amber-400');
+            }
+        }
+
+        window.startQuiz = function() {
+            userName = document.getElementById('user-name').value.trim();
+            if(!userName) {
+                alert('Por favor, digite seu nome ou apelido!');
+                return;
+            }
+            if(!userProfile) {
+                alert('Por favor, selecione se você é Aluno do CLAC ou Visitante!');
+                return;
+            }
+
+            currentQuestionIndex = 0;
+            score = 0;
+            
+            document.getElementById('screen-welcome').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = questions[currentQuestionIndex];
+            document.getElementById('question-counter').innerText = `Pergunta ${currentQuestionIndex + 1} de ${questions.length}`;
+            document.getElementById('question-text').innerText = q.q;
+            document.getElementById('current-score').innerText = score;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            document.getElementById('next-btn').classList.add('hidden');
+
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left bg-slate-900 border border-slate-700 hover:border-slate-500 p-4 rounded-xl text-slate-200 transition font-medium";
+                btn.innerText = opt;
+                btn.onclick = () => selectOption(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(selectedIndex, selectedBtn) {
+            const q = questions[currentQuestionIndex];
+            const buttons = document.getElementById('options-container').children;
+
+            for(let btn of buttons) {
+                btn.disabled = true;
+                btn.classList.add('opacity-75');
+            }
+
+            if(selectedIndex === q.answer) {
+                selectedBtn.classList.remove('border-slate-700', 'bg-slate-900');
+                selectedBtn.classList.add('border-emerald-500', 'bg-emerald-500/20', 'text-emerald-300');
+                score++;
+            } else {
+                selectedBtn.classList.remove('border-slate-700', 'bg-slate-900');
+                selectedBtn.classList.add('border-rose-500', 'bg-rose-500/20', 'text-rose-300');
+                buttons[q.answer].classList.remove('border-slate-700', 'bg-slate-900');
+                buttons[q.answer].classList.add('border-emerald-500', 'bg-emerald-500/20', 'text-emerald-300');
+            }
+
+            document.getElementById('current-score').innerText = score;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        window.nextQuestion = function() {
+            currentQuestionIndex++;
+            if(currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        async function finishQuiz() {
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('screen-result').classList.remove('hidden');
+
+            const percentage = Math.round((score / questions.length) * 100);
+            document.getElementById('result-name').innerText = `Parabéns, ${userName}!`;
+            document.getElementById('result-percentage').innerText = `${percentage}%`;
+            document.getElementById('result-details').innerText = `Você acertou ${score} de ${questions.length} perguntas.`;
+
+            // Salvar no Firebase Firestore
+            try {
+                await addDoc(collection(db, "ranking_cultura_alema"), {
+                    name: userName,
+                    profile: userProfile,
+                    score: score,
+                    percentage: percentage,
+                    createdAt: serverTimestamp()
+                });
+            } catch (error) {
+                console.error("Erro ao salvar no Firebase: ", error);
+            }
+        }
+
+        window.showRanking = async function() {
+            document.getElementById('screen-welcome').classList.add('hidden');
+            document.getElementById('screen-result').classList.add('hidden');
+            document.getElementById('screen-ranking').classList.remove('hidden');
+
+            const tbody = document.getElementById('ranking-table-body');
+            tbody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-slate-400">Carregando ranking global...</td></tr>`;
+
+            try {
+                const q = query(collection(db, "ranking_cultura_alema"), orderBy("score", "desc"), limit(50));
+                const querySnapshot = await getDocs(q);
+
+                tbody.innerHTML = '';
+                if(querySnapshot.empty) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-slate-400">Nenhum resultado registrado ainda. Seja o primeiro!</td></tr>`;
+                    return;
+                }
+
+                let index = 1;
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-slate-900/40 transition";
+                    tr.innerHTML = `
+                        <td class="py-3 px-4 font-bold text-amber-400">#${index++}</td>
+                        <td class="py-3 px-4 font-medium text-white">${escapeHtml(data.name)}</td>
+                        <td class="py-3 px-4"><span class="text-xs px-2.5 py-1 rounded-full ${data.profile === 'Aluno CLAC' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-slate-700 text-slate-300'}">${data.profile}</span></td>
+                        <td class="py-3 px-4 text-right font-bold text-emerald-400">${data.score}/20 (${data.percentage}%)</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error("Erro ao buscar ranking: ", error);
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-rose-400">Erro ao carregar o ranking. Verifique as regras de segurança do Firestore.</td></tr>`;
+            }
+        }
+
+        window.backToWelcome = function() {
+            document.getElementById('screen-ranking').classList.add('hidden');
+            document.getElementById('screen-welcome').classList.remove('hidden');
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
