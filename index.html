@@ -3,20 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz de Cultura Alemã - CLAC</title>
+    <title>Curiosidades da Alemanha! - CLAC</title>
     <!-- Tailwind CSS para um design moderno -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Fundo com a imagem solicitada do mapa da Alemanha e sobreposição escura */
+        .map-bg {
+            background-color: #0f172a;
+            background-image: 
+                linear-gradient(rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.92)),
+                url('https://andrezadicaeindica.com.br/wp-content/uploads/2026/02/mapa-alemanha.png.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+    </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
+<body class="map-bg text-slate-100 min-h-screen flex flex-col items-center justify-between p-4">
 
-    <div class="w-full max-w-2xl bg-slate-800 rounded-2xl shadow-xl p-6 md:p-8 border border-slate-700">
+    <div class="w-full max-w-2xl bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 border border-slate-700 my-auto">
         
         <!-- TELA 1: Identificação (Perfil e Nome) -->
         <div id="screen-welcome" class="space-y-6">
             <div class="text-center space-y-2">
                 <span class="bg-amber-500/10 text-amber-400 text-xs font-semibold px-3 py-1 rounded-full border border-amber-500/20">Desafio Cultural</span>
-                <h1 class="text-3xl font-bold tracking-tight text-white">Quiz de Cultura Alemã (Turma Alemão III)</h1>
-                <p class="text-slate-400 text-sm"> Teste seus conhecimentos sobre a Alemanha e dispute o ranking global! <br> Prof- Sarah </p>
+                <h1 class="text-3xl font-bold tracking-tight text-white">Curiosidades da Alemanha!</h1>
+                <p class="text-slate-300 text-sm">
+                    Turma DEUTSCH III - CLAC UFRJ<br>
+                    <span class="text-xs text-slate-400">Professora: Sarah</span>
+                </p>
             </div>
 
             <div class="space-y-4 pt-4">
@@ -104,8 +119,8 @@
     </div>
 
     <!-- Rodapé com o nome José Hilto -->
-    <footer class="mt-6 text-center text-xs text-slate-500">
-        Desenvolvido com dedicação por <span class="text-slate-400 font-medium">José Hilto</span> &bull; CLAC
+    <footer class="mt-6 text-center text-xs text-slate-400 bg-slate-950/60 py-3 px-6 rounded-xl border border-slate-800">
+        Desenvolvido com dedicação por <span class="text-slate-200 font-medium">José Hilto</span> &bull; Turma DEUTSCH III &bull; CLAC UFRJ
     </footer>
 
     <!-- Script da Aplicação e Firebase (Modular SDK) -->
